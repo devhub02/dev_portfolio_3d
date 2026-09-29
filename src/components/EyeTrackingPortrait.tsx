@@ -1,41 +1,61 @@
 import { useEffect, useId } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import eyes from '../eyes.json';
 
 const W = 1000;
 const H = 1200;
-const MAX_X = 9;
-const MAX_Y = 5;
+const IRIS_X = 8;
+const IRIS_Y = 4.5;
+const HEAD_YAW = 9; // deg
+const HEAD_PITCH = 6; // deg
+const HEAD_SHIFT = 10; // px
 
 type EyeKey = 'l' | 'r';
+const keys: EyeKey[] = ['l', 'r'];
+const spring = { stiffness: 140, damping: 20, mass: 0.6 };
+const eyeSpring = { stiffness: 320, damping: 26, mass: 0.3 };
 
-/** Portrait whose irises follow the mouse cursor. */
+/**
+ * Portrait inside a sphere. The head turns toward the cursor and the irises
+ * lead it, so eyes and face move together.
+ */
 export default function EyeTrackingPortrait({ alt, className }: { alt: string; className?: string }) {
   const uid = useId().replace(/:/g, '');
-  const tx = useMotionValue(0);
-  const ty = useMotionValue(0);
-  const x = useSpring(tx, { stiffness: 220, damping: 22, mass: 0.4 });
-  const y = useSpring(ty, { stiffness: 220, damping: 22, mass: 0.4 });
+  const nx = useMotionValue(0); // -1..1 target
+  const ny = useMotionValue(0);
+
+  // Head follows slower than the eyes.
+  const hx = useSpring(nx, spring);
+  const hy = useSpring(ny, spring);
+  const ex = useSpring(nx, eyeSpring);
+  const ey = useSpring(ny, eyeSpring);
+
+  const rotateY = useTransform(hx, (v) => v * HEAD_YAW);
+  const rotateX = useTransform(hy, (v) => -v * HEAD_PITCH);
+  const shiftX = useTransform(hx, (v) => v * HEAD_SHIFT);
+  const shiftY = useTransform(hy, (v) => v * HEAD_SHIFT * 0.5);
+  const irisX = useTransform(ex, (v) => v * IRIS_X);
+  const irisY = useTransform(ey, (v) => v * IRIS_Y);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const svg = document.getElementById(`eyes-${uid}`);
       if (!svg) return;
       const r = svg.getBoundingClientRect();
-      // Cursor relative to the point between the eyes, in image px.
       const scale = W / r.width;
       const cx = r.left + ((eyes.l.cx + eyes.r.cx) / 2) / scale;
       const cy = r.top + ((eyes.l.cy + eyes.r.cy) / 2) / scale;
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
+      const reach = Math.max(window.innerWidth, window.innerHeight) * 0.45;
       const dist = Math.hypot(dx, dy) || 1;
-      const k = Math.min(1, dist / 250);
-      tx.set((dx / dist) * MAX_X * k);
-      ty.set((dy / dist) * MAX_Y * k);
+      const k = Math.min(1, dist / reach);
+      nx.set((dx / dist) * k);
+      ny.set((dy / dist) * k);
     };
     const onLeave = () => {
-      tx.set(0);
-      ty.set(0);
+      nx.set(0);
+      ny.set(0);
     };
     window.addEventListener('mousemove', onMove);
     document.documentElement.addEventListener('mouseleave', onLeave);
@@ -43,50 +63,82 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
       window.removeEventListener('mousemove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
     };
-  }, [tx, ty, uid]);
+  }, [nx, ny, uid]);
 
-  const keys: EyeKey[] = ['l', 'r'];
   const d = Math.round(eyes.l.r * 2 + 2);
 
   return (
-    <div className={`relative ${className ?? ''}`} style={{ aspectRatio: `${W} / ${H}` }}>
-      <img src="/images/hero-base.webp" alt={alt} className="absolute inset-0 w-full h-full select-none" draggable={false} />
-      <svg
-        id={`eyes-${uid}`}
-        viewBox={`0 0 ${W} ${H}`}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        aria-hidden="true"
+    <div
+      className={`relative aspect-square rounded-full overflow-hidden ${className ?? ''}`}
+      style={{
+        background:
+          'radial-gradient(circle at 50% 35%, #3a2a78 0%, #1b1240 45%, #0d0820 100%)',
+        boxShadow:
+          '0 0 0 2px rgba(215,226,234,0.35), 0 0 90px rgba(118,33,176,0.45), inset 0 -30px 60px rgba(0,0,0,0.5)',
+        perspective: 800,
+      }}
+    >
+      <motion.div
+        className="absolute left-1/2 bottom-0 w-[84%]"
+        style={{
+          aspectRatio: `${W} / ${H}`,
+          x: '-50%',
+          translateX: shiftX,
+          translateY: shiftY,
+          rotateX,
+          rotateY,
+          transformOrigin: '50% 75%',
+          transformStyle: 'preserve-3d',
+          willChange: 'transform',
+        }}
       >
-        <defs>
-          {keys.map((k) => (
-            <clipPath key={k} id={`clip-${k}-${uid}`}>
-              <polygon points={eyes[k].open.map((p) => p.join(',')).join(' ')} />
-            </clipPath>
-          ))}
-          <linearGradient id={`lid-${uid}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#2a120a" stopOpacity="0.55" />
-            <stop offset="0.4" stopColor="#2a120a" stopOpacity="0.12" />
-            <stop offset="1" stopColor="#2a120a" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {keys.map((k) => {
-          const e = eyes[k];
-          return (
-            <g key={k} clipPath={`url(#clip-${k}-${uid})`}>
-              <motion.g style={{ x, y }}>
-                <image
-                  href={`/images/iris-${k}.png`}
-                  x={Math.round(e.cx - d / 2)}
-                  y={Math.round(e.cy - d / 2)}
-                  width={d}
-                  height={d}
-                />
-              </motion.g>
-              <rect x={e.cx - 40} y={e.cy - 13} width={80} height={26} fill={`url(#lid-${uid})`} />
-            </g>
-          );
-        })}
-      </svg>
+        <img src="/images/hero-base.webp" alt={alt} className="absolute inset-0 w-full h-full select-none" draggable={false} />
+        <svg
+          id={`eyes-${uid}`}
+          viewBox={`0 0 ${W} ${H}`}
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          aria-hidden="true"
+        >
+          <defs>
+            <filter id={`soft-${uid}`}>
+              <feGaussianBlur stdDeviation="0.5" />
+            </filter>
+            {keys.map((k) => (
+              <clipPath key={k} id={`clip-${k}-${uid}`}>
+                <polygon points={eyes[k].open.map((p) => p.join(',')).join(' ')} />
+              </clipPath>
+            ))}
+            <linearGradient id={`lid-${uid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#2a120a" stopOpacity="0.6" />
+              <stop offset="0.45" stopColor="#2a120a" stopOpacity="0.12" />
+              <stop offset="1" stopColor="#2a120a" stopOpacity="0" />
+            </linearGradient>
+            {/* Rounds the eyeball: darker toward the corners so it reads as a sphere. */}
+            <radialGradient id={`ball-${uid}`} cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0.45" stopColor="#3a1a10" stopOpacity="0" />
+              <stop offset="1" stopColor="#3a1a10" stopOpacity="0.6" />
+            </radialGradient>
+          </defs>
+          {keys.map((k) => {
+            const e = eyes[k];
+            return (
+              <g key={k} clipPath={`url(#clip-${k}-${uid})`}>
+                <motion.g style={{ x: irisX, y: irisY }} filter={`url(#soft-${uid})`}>
+                  <image
+                    href={`/images/iris-${k}.png`}
+                    x={Math.round(e.cx - d / 2)}
+                    y={Math.round(e.cy - d / 2)}
+                    width={d}
+                    height={d}
+                  />
+                </motion.g>
+                <rect x={e.cx - 40} y={e.cy - 15} width={80} height={32} fill={`url(#ball-${uid})`} />
+                <rect x={e.cx - 40} y={e.cy - 15} width={80} height={32} fill={`url(#lid-${uid})`} />
+              </g>
+            );
+          })}
+        </svg>
+      </motion.div>
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default function HeroSection() {
           >
             <EyeTrackingPortrait
               alt={`${profile.fullName} portrait`}
-              className="w-[220px] sm:w-[280px] md:w-[340px] lg:w-[400px]"
+              className="w-[260px] sm:w-[330px] md:w-[400px] lg:w-[480px]"
             />
           </Magnet>
         </FadeIn>
