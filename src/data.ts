@@ -3,6 +3,11 @@ export const profile = {
   fullName: 'Devendra Kumar',
   email: 'devhub9084@gmail.com',
   location: 'Gaya, India',
+  socials: [
+    { label: 'GitHub', href: 'https://github.com/devhub02' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/devhub02/' },
+    { label: 'X', href: 'https://x.com/devhub02' },
+  ],
 };
 
 export const heroTagline =

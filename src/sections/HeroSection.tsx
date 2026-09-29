@@ -8,7 +8,7 @@ const links = [
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: `mailto:${profile.email}` },
+  { label: 'Contact', href: '#contact' },
 ];
 
 export default function HeroSection() {
@@ -49,7 +49,7 @@ export default function HeroSection() {
           </p>
         </FadeIn>
         <FadeIn delay={0.5} y={20}>
-          <ContactButton href={`mailto:${profile.email}`} />
+          <ContactButton />
         </FadeIn>
       </div>
 

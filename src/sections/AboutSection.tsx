@@ -1,7 +1,7 @@
 import FadeIn from '../components/FadeIn';
 import AnimatedText from '../components/AnimatedText';
 import ContactButton from '../components/ContactButton';
-import { aboutText, profile } from '../data';
+import { aboutText } from '../data';
 
 const base = 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7';
 
@@ -42,7 +42,7 @@ export default function AboutSection() {
       </div>
 
       <div className="relative z-10">
-        <ContactButton href={`mailto:${profile.email}`} />
+        <ContactButton />
       </div>
     </section>
   );
