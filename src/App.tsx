@@ -1,6 +1,7 @@
 import HeroSection from './sections/HeroSection';
 import MarqueeSection from './sections/MarqueeSection';
 import AboutSection from './sections/AboutSection';
+import SkillsSection from './sections/SkillsSection';
 import ServicesSection from './sections/ServicesSection';
 import ProjectsSection from './sections/ProjectsSection';
 
@@ -10,6 +11,7 @@ export default function App() {
       <HeroSection />
       <MarqueeSection />
       <AboutSection />
+      <SkillsSection />
       <ServicesSection />
       <ProjectsSection />
     </main>

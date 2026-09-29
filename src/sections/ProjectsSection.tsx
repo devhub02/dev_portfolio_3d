@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
 import FadeIn from '../components/FadeIn';
-import LiveProjectButton from '../components/LiveProjectButton';
 import { projects } from '../data';
 import type { Project } from '../data';
 
@@ -22,7 +21,6 @@ function ProjectCard({
   const targetScale = 1 - (total - 1 - index) * 0.03;
   const range: [number, number] = [index / total, 1];
   const scale = useTransform(progress, range, [1, targetScale]);
-  const [a, b, c] = project.images;
 
   return (
     <div className="h-[85vh] sticky top-24 md:top-32">
@@ -50,16 +48,29 @@ function ProjectCard({
               </h3>
             </div>
           </div>
-          <LiveProjectButton />
         </div>
 
-        <div className="flex gap-3 sm:gap-4">
-          <div className="flex flex-col gap-3 sm:gap-4" style={{ width: '40%' }}>
-            <img src={a} alt="" loading="lazy" className={`w-full object-cover ${radius}`} style={{ height: 'clamp(130px, 16vw, 230px)' }} />
-            <img src={b} alt="" loading="lazy" className={`w-full object-cover ${radius}`} style={{ height: 'clamp(160px, 22vw, 340px)' }} />
+        <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4 md:w-[40%]">
+            <div className={`flex flex-col justify-center gap-2 p-6 sm:p-8 border border-[#D7E2EA]/25 ${radius}`} style={{ minHeight: 'clamp(130px, 16vw, 230px)' }}>
+              <span className="text-[#D7E2EA]/60 font-light uppercase tracking-widest text-xs sm:text-sm">Role</span>
+              <span className="text-[#D7E2EA] font-medium uppercase" style={{ fontSize: 'clamp(1rem, 1.8vw, 1.6rem)' }}>{project.role}</span>
+            </div>
+            <div className={`flex flex-col justify-center gap-2 p-6 sm:p-8 border border-[#D7E2EA]/25 ${radius}`} style={{ minHeight: 'clamp(160px, 22vw, 340px)' }}>
+              <span className="text-[#D7E2EA]/60 font-light uppercase tracking-widest text-xs sm:text-sm">Period</span>
+              <span className="hero-heading font-black uppercase leading-none" style={{ fontSize: 'clamp(1.5rem, 3.4vw, 3rem)' }}>{project.period}</span>
+            </div>
           </div>
-          <div style={{ width: '60%' }}>
-            <img src={c} alt="" loading="lazy" className={`w-full h-full object-cover ${radius}`} />
+          <div
+            className={`flex flex-col justify-center gap-6 p-6 sm:p-10 md:w-[60%] ${radius}`}
+            style={{ background: 'linear-gradient(135deg, #16161a 0%, #1c1230 100%)', border: '1px solid rgba(215,226,234,0.25)' }}
+          >
+            <p className="text-[#D7E2EA] font-light leading-relaxed" style={{ fontSize: 'clamp(0.95rem, 1.6vw, 1.35rem)' }}>{project.summary}</p>
+            <ul className="flex flex-col gap-3">
+              {project.highlights.map((h) => (
+                <li key={h} className="text-[#D7E2EA] font-medium uppercase tracking-wide" style={{ fontSize: 'clamp(0.8rem, 1.3vw, 1.1rem)' }}>— {h}</li>
+              ))}
+            </ul>
           </div>
         </div>
       </motion.div>

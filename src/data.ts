@@ -39,65 +39,53 @@ export const services = [
   },
 ];
 
-export interface Project {
-  category: string;
-  name: string;
-  images: [string, string, string];
-}
-
-const img = (id: string) =>
-  `https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2F${id}.png&w=1280&q=85`;
-
-export const projects: Project[] = [
+export const skillGroups = [
   {
-    category: 'Product',
-    name: 'TripG',
-    images: [
-      img('hf_20260412_055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db'),
-      img('hf_20260412_055431_11d841fd-8b41-46a5-82e4-b04f2407a7d8'),
-      img('hf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327'),
-    ],
+    title: 'Mechanical Engineering',
+    skills: ['Mechanical Design', 'CAD Drafting', 'SolidWorks 3D Modeling', 'Computer-Aided Design (CAD)', 'Engineering Analysis', 'Product Development'],
   },
   {
-    category: 'Personal',
-    name: 'Mechanical Design Studies',
-    images: [
-      img('hf_20260412_055654_911201c5-36d9-4bc6-bac7-331adfce159f'),
-      img('hf_20260412_055723_5ceda0b8-d9c2-4665-b2e3-83ba19ba76d1'),
-      img('hf_20260412_055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea'),
-    ],
+    title: 'Programming & Development',
+    skills: ['Python', 'JavaScript', 'React', 'React Native', 'HTML & CSS', 'MATLAB'],
   },
   {
-    category: 'Personal',
-    name: 'React Native App Concepts',
-    images: [
-      img('hf_20260412_055759_963cfb0b-4bd1-4b0f-9d0a-09bd6cf95b2f'),
-      img('hf_20260412_060108_438f781a-9846-4dcc-89ab-c4e6cb830f5b'),
-      img('hf_20260412_055818_9d062121-ad7e-46b9-999a-1a6a692ef1ee'),
-    ],
+    title: 'Software & Product Design',
+    skills: ['UI/UX Design', 'System Design', 'Mobile Application Development', 'Microsoft Excel', 'Software Applications'],
+  },
+  {
+    title: 'Project & Business',
+    skills: ['Project Management', 'Technical Analysis', 'Startup & Business Model Development'],
+  },
+  {
+    title: 'Creative & Digital',
+    skills: ['Adobe Software', 'Content Development', 'Video Production & Editing'],
   },
 ];
 
-export const marqueeImages = [
-  'hero-space-voyage-preview-eECLH3Yc',
-  'hero-codenest-preview-Cgppc2qV',
-  'hero-vex-ventures-preview-BczMFIiw',
-  'hero-stellar-ai-v2-preview-DjvxjG3C',
-  'hero-asme-preview-B_nGDnTP',
-  'hero-transform-data-preview-Cx5OU29N',
-  'hero-vitara-preview-Cjz2QYyU',
-  'hero-terra-preview-BFjrCr7T',
-  'hero-skyelite-preview-DHaZIgUv',
-  'hero-aethera-preview-DknSlcTa',
-  'hero-designpro-preview-D8c5_een',
-  'hero-stellar-ai-preview-D3HL6bw1',
-  'hero-xportfolio-preview-D4A8maiC',
-  'hero-orbit-web3-preview-BXt4OttD',
-  'hero-nexora-preview-cx5HmUgo',
-  'hero-evr-ventures-preview-DZxeVFEX',
-  'hero-planet-orbit-preview-DWAP8Z1P',
-  'hero-new-era-preview-CocuDUm9',
-  'hero-wealth-preview-B70idl_u',
-  'hero-luminex-preview-CxOP7ce6',
-  'hero-celestia-preview-0yO3jXO8',
-].map((n) => `https://motionsites.ai/assets/${n}.gif`);
+export const marqueeSkills = skillGroups.flatMap((g) => g.skills);
+
+export interface Project {
+  category: string;
+  name: string;
+  period: string;
+  role: string;
+  summary: string;
+  highlights: string[];
+}
+
+export const projects: Project[] = [
+  {
+    category: 'Startup / Product',
+    name: 'TripG',
+    period: '09/2026 – Present',
+    role: 'Mechanical Engineer & Product Development',
+    summary:
+      'A technology-driven travel product based in Gaya, built from product vision through to development.',
+    highlights: [
+      'Product vision and development',
+      'Startup vision and business model',
+      'Product planning, UI/UX and technical analysis',
+      'Software development',
+    ],
+  },
+];

@@ -1,11 +1,12 @@
 import FadeIn from '../components/FadeIn';
 import Magnet from '../components/Magnet';
+import EyeTrackingPortrait from '../components/EyeTrackingPortrait';
 import ContactButton from '../components/ContactButton';
 import { heroTagline, profile } from '../data';
 
 const links = [
   { label: 'About', href: '#about' },
-  { label: 'Price', href: '#services' },
+  { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Contact', href: `mailto:${profile.email}` },
 ];
@@ -60,11 +61,9 @@ export default function HeroSection() {
             activeTransition="transform 0.3s ease-out"
             inactiveTransition="transform 0.6s ease-in-out"
           >
-            <img
-              src="/images/hero-portrait.webp"
+            <EyeTrackingPortrait
               alt={`${profile.fullName} portrait`}
-              className="block w-[280px] sm:w-[360px] md:w-[440px] lg:w-[520px] h-auto select-none"
-              draggable={false}
+              className="w-[220px] sm:w-[280px] md:w-[340px] lg:w-[400px]"
             />
           </Magnet>
         </FadeIn>
