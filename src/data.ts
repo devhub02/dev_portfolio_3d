@@ -78,9 +78,9 @@ export const projects: Project[] = [
     category: 'Startup / Product',
     name: 'TripG',
     period: '09/2026 – Present',
-    role: 'Mechanical Engineer & Product Development',
+    role: 'Software And Programming',
     summary:
-      'A technology-driven travel product based in Gaya, built from product vision through to development.',
+      'A technology-driven travel product maked for travellers, built from product vision through to development.',
     highlights: [
       'Product vision and development',
       'Startup vision and business model',
