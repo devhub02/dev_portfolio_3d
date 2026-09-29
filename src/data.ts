@@ -6,7 +6,7 @@ export const profile = {
 };
 
 export const heroTagline =
-  'a 3d creator & mechanical engineer driven by crafting striking and unforgettable products';
+  '  ';
 
 export const aboutText =
   "Mechanical engineer from Gaya, India, combining CAD and SolidWorks 3D modeling with UI/UX, React and app development. I'm currently building TripG, a technology-driven travel product, and i love turning bold ideas into real products. Let's build something incredible together!";
