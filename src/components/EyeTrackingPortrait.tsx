@@ -32,6 +32,7 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
 
   const rotateY = useTransform(hx, (v) => v * HEAD_YAW);
   const rotateX = useTransform(hy, (v) => -v * HEAD_PITCH);
+  const roll = useTransform(hx, (v) => v * 4);
   const shiftX = useTransform(hx, (v) => v * HEAD_SHIFT);
   const shiftY = useTransform(hy, (v) => v * HEAD_SHIFT * 0.5);
   const irisX = useTransform(ex, (v) => v * IRIS_X);
@@ -96,7 +97,9 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
           translateY: shiftY,
           rotateX,
           rotateY,
-          transformOrigin: '50% 75%',
+          rotateZ: roll,
+          // Pivot near the base of the neck so the neck bends with the head.
+          transformOrigin: '50% 88%',
           transformStyle: 'preserve-3d',
           willChange: 'transform',
         }}
