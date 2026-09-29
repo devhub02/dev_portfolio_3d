@@ -4,11 +4,11 @@ import eyes from '../eyes.json';
 
 const W = 1000;
 const H = 1200;
-const IRIS_X = 8;
-const IRIS_Y = 4.5;
-const HEAD_YAW = 9; // deg
-const HEAD_PITCH = 6; // deg
-const HEAD_SHIFT = 10; // px
+const IRIS_X = 10;
+const IRIS_Y = 5.5;
+const HEAD_YAW = 20; // deg
+const HEAD_PITCH = 13; // deg
+const HEAD_SHIFT = 16; // px
 
 type EyeKey = 'l' | 'r';
 const keys: EyeKey[] = ['l', 'r'];
@@ -47,11 +47,17 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
       const cy = r.top + ((eyes.l.cy + eyes.r.cy) / 2) / scale;
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
-      const reach = Math.max(window.innerWidth, window.innerHeight) * 0.45;
-      const dist = Math.hypot(dx, dy) || 1;
-      const k = Math.min(1, dist / reach);
-      nx.set((dx / dist) * k);
-      ny.set((dy / dist) * k);
+      // Measure against the room available on each side, so the head and eyes
+      // reach full turn as the cursor nears that screen edge, in any direction.
+      const roomX = dx < 0 ? cx : window.innerWidth - cx;
+      const roomY = dy < 0 ? cy : window.innerHeight - cy;
+      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+      const tx = clamp(dx / Math.max(roomX * 0.8, 1));
+      const ty = clamp(dy / Math.max(roomY * 0.8, 1));
+      // Ease so small movements are subtle and large ones turn fully.
+      const ease = (v: number) => Math.sign(v) * Math.pow(Math.abs(v), 0.8);
+      nx.set(ease(tx));
+      ny.set(ease(ty));
     };
     const onLeave = () => {
       nx.set(0);
