@@ -69,17 +69,20 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
 
   return (
     <div
-      className={`relative aspect-square rounded-full overflow-hidden ${className ?? ''}`}
+      className={`relative ${className ?? ''}`}
       style={{
-        background:
-          'radial-gradient(circle at 50% 35%, #3a2a78 0%, #1b1240 45%, #0d0820 100%)',
-        boxShadow:
-          '0 0 0 2px rgba(215,226,234,0.35), 0 0 90px rgba(118,33,176,0.45), inset 0 -30px 60px rgba(0,0,0,0.5)',
+        aspectRatio: `${W} / ${H}`,
         perspective: 800,
+        filter: 'drop-shadow(0 0 40px rgba(118,33,176,0.45))',
       }}
     >
+      {/* V-shaped bust cut: shoulders taper to a point instead of a hard edge. */}
+      <div
+        className="absolute inset-0"
+        style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 66%, 50% 100%, 0% 66%)' }}
+      >
       <motion.div
-        className="absolute left-1/2 bottom-0 w-[84%]"
+        className="absolute left-1/2 bottom-0 w-full"
         style={{
           aspectRatio: `${W} / ${H}`,
           x: '-50%',
@@ -139,6 +142,7 @@ export default function EyeTrackingPortrait({ alt, className }: { alt: string; c
           })}
         </svg>
       </motion.div>
+      </div>
     </div>
   );
 }
